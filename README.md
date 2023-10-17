@@ -7,7 +7,7 @@ The main contribution of this factor is two-fold.
     * This factor can calibrate the above parameters online.
 * Reliable motion constraints
     * Wheel odometry is accurately calculated based on the online calibration.
-    * This factor makes an odometry estimation (i.e., LiDAR-IMU odometry) more robust to environments where point clouds degenerate (e.g., long corridors and tunnels).
+    * This factor makes an odometry estimation (e.g., LiDAR-IMU odometry) more robust to environments where point clouds degenerate (e.g., long corridors and tunnels).
 
 The following video validates that LiDAR-IMU odometry with our full linear wheel odometry factor accomplishes accurate odometry estimation even in long corridors.
 [[video](https://www.youtube.com/watch?v=woLl1c5IenE)]
