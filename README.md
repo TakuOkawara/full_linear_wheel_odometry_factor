@@ -1,6 +1,6 @@
 # Introduction
 The full linear wheel odometry factor is a constraint depending on not only robot poses but also the kinematic parameters of a skid-steering robot.
-This factor can be used for two- and six-wheeled robots and tracked robots other than 4-wheeled robots.
+This factor can be used for two- and six-wheeled robots and tracked robots other than 4-wheeled robots if these robots don't have steering mechanisms.
 The kinematic parameters are defined by the full linear model. 
 Therefore, this factor performs online calibration of kinematic models for skid-steering robots in addition to the motion constraint. 
 
