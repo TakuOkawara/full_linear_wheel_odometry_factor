@@ -6,8 +6,7 @@ Therefore, this factor performs online calibration of kinematic models for skid-
 
 The main contribution of this factor is two-fold.
 * Online calibration of kinematic parameters for skid-steering robots
-    * Skid-steering robot's wheel odometry depends on directly-nonobservable phenomena or values (e.g., wheel slippage
-      and kinematic model errors).
+    * Skid-steering robot's wheel odometry depends on directly-nonobservable phenomena or values (e.g., wheel slippage, and kinematic model errors caused by tire pressure and  aging).
     * This factor can calibrate the above parameters online.
 * Reliable motion constraints
     * Wheel odometry is accurately calculated based on the online calibration.
