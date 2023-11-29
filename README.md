@@ -21,7 +21,7 @@ The following video validates that LiDAR-IMU odometry with our full linear wheel
 We tested this code by Ubuntu 22.04
 
 # Usage
-The full linear wheel odometry factor is implemented as a header-only file. Therefore, you can use this factor by only including this header file in your code. Please refer to the examples directory for incorporating this factor into your factor graph defined by GTSAM. Specifically, the example file can be executed based on the following commands.
+**The full linear wheel odometry factor is implemented as a header-only file. Therefore, you can use this factor by only including this header file in your code.** Please refer to the examples directory for incorporating this factor into your factor graph defined by GTSAM. Specifically, the example file can be executed based on the following commands.
 ```commandline
 cd examples/
 cmake .
