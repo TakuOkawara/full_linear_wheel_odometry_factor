@@ -3,7 +3,7 @@ The full linear wheel odometry factor is a constraint depending on not only robo
 This factor can be used for two- and six-wheeled robots and tracked robots other than four-wheeled robots if these robots don't have steering mechanisms.
 The kinematic parameters are defined by the full linear model. 
 Therefore, this factor performs online calibration of kinematic models for skid-steering robots in addition to the motion constraint.
-**Owing to the online calibration, reliable wheel odometry-based constraint being adaptive to any ground (especially, slippage depending on the type of ground surface) is enabled without prior offline calibration manually**.
+**Owing to the online calibration, reliable wheel odometry-based constraint being adaptive to unknown environments (especially, slippage depending on the type of ground surface) is enabled without prior offline calibration manually**.
 
 The main contribution of this factor is two-fold.
 * Online calibration of kinematic parameters for skid-steering robots
