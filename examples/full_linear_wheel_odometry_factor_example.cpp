@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
 
   // Set initial values
   // For illustrative purposes, these have been deliberately set to incorrect values
-  // K = [J11 J21 J21 J22 J31 J32]^T, J elements are based on full linear model.
+  // K = [J11 J12 J21 J22 J31 J32]^T, J elements are based on full linear model.
   gtsam::Values initial;
   initial.insert(K(1), initial_K);
   initial.insert(K(2), initial_K);
@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
   initial.print("\n*** Initial Estimate: ***\n");  // print
 
   // optimize using Levenberg-Marquardt optimization
-  // K = [J11 J21 J21 J22 J31 J32]^T, J elements are based on full linear model.
+  // K = [J11 J12 J21 J22 J31 J32]^T, J elements are based on full linear model.
   gtsam::Values result = gtsam::LevenbergMarquardtOptimizer(graph, initial).optimize();
   result.print("*** Final Result: ***\n");
 
@@ -126,7 +126,7 @@ int main(int argc, char** argv) {
   }
 
   std::cout << "\nYou can see J11 and J12 of the full linear model were changed.\n";
-  std::cout << "K = [J11 J21 J21 J22 J31 J32]^T, J elements are based on the full linear model.\n";
+  std::cout << "K = [J11 J12 J21 J22 J31 J32]^T, J elements are based on the full linear model.\n";
   
 
   return 0;
