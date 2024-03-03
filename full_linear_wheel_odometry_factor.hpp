@@ -49,15 +49,12 @@ public:
     boost::optional<gtsam::Matrix&> H1, boost::optional<gtsam::Matrix&> H2, boost::optional<gtsam::Matrix&> H3) const override {
 
     // 1. Calculate a measurement function of the full linear wheel odometry with respect to the robot frame (measuremetn function)
-    // 1.1 The robot displacement ∆o_ij ∈ se2 (Eq.12 in our paper) is extended into ∆O_ij ∈ se3.
+    // 1.1 The robot displacement ∆o_ij ∈ se2 is extended into ∆O_ij ∈ se3.
     // 1.2 ∆O_ij ∈ se3 is converted into SE3.
-    gtsam::Pose3 T_Robot_DeltaRobot(
-      gtsam::Rot3::AxisAngle(gtsam::Point3(0.0, 0.0, 1.0), ssmr_odom_coefficient_vector[4]*left_delta_angle_ + ssmr_odom_coefficient_vector[5]*right_delta_angle_),
-      gtsam::Point3(ssmr_odom_coefficient_vector[0]*left_delta_angle_ + ssmr_odom_coefficient_vector[1]*right_delta_angle_,
-                    ssmr_odom_coefficient_vector[2]*left_delta_angle_ + ssmr_odom_coefficient_vector[3]*right_delta_angle_,
-                    0.0)
-    );
-    
+    gtsam::Vector6 measurement_function_in_robot_frame;
+    measurement_function_in_robot_frame << 0.0, 0.0, ssmr_odom_coefficient_vector[4]*left_delta_angle_ + ssmr_odom_coefficient_vector[5]*right_delta_angle_,
+                                           ssmr_odom_coefficient_vector[0]*left_delta_angle_ + ssmr_odom_coefficient_vector[1]*right_delta_angle_, ssmr_odom_coefficient_vector[2]*left_delta_angle_ + ssmr_odom_coefficient_vector[3]*right_delta_angle_, 0.0;
+    gtsam::Pose3 T_Robot_DeltaRobot = gtsam::Pose3::Expmap(measurement_function_in_robot_frame);    
 
     // 2. Transform T_Robot_DeltaRobot (the robot displacement in the robot frame) into T_IMU_DeltaIMU (the IMU displacement in the IMU frame) 
     // 2.1 Calculate T_IMU_DeltaIMU bsed on the following equation.
@@ -101,52 +98,52 @@ public:
     if(H1) {
       // d(T_Robot_DeltaRobot) / d(J11)
       gtsam::Matrix61 H_deltaRobot_J11;
-      H_deltaRobot_J11 = (gtsam::Matrix(6, 1) << 0.0,                 // rot X
-                                                 0.0,                 // rot Y
-                                                 0.0,                 // rot Z
-                                                 left_delta_angle_,   // trans X
-                                                 0.0,                 // trans Y
-                                                 0.0).finished();     // trans Z
+      H_deltaRobot_J11 << 0.0,                 // rot X
+                          0.0,                 // rot Y
+                          0.0,                 // rot Z
+                          left_delta_angle_,   // trans X
+                          0.0,                 // trans Y
+                          0.0;                 // trans Z
       // d(T_Robot_DeltaRobot) / d(J12)
       gtsam::Matrix61 H_deltaRobot_J12;
-      H_deltaRobot_J12 = (gtsam::Matrix(6, 1) << 0.0,
-                                                 0.0,
-                                                 0.0,
-                                                 right_delta_angle_,
-                                                 0.0,
-                                                 0.0).finished();
+      H_deltaRobot_J12 << 0.0,
+                          0.0,
+                          0.0,
+                          right_delta_angle_,
+                          0.0,
+                          0.0;
       // d(T_Robot_DeltaRobot) / d(J21)
       gtsam::Matrix61 H_deltaRobot_J21;
-      H_deltaRobot_J21 = (gtsam::Matrix(6, 1) << 0.0,
-                                                 0.0,
-                                                 0.0,
-                                                 0.0,
-                                                 left_delta_angle_,
-                                                 0.0).finished();
+      H_deltaRobot_J21 << 0.0,
+                          0.0,
+                          0.0,
+                          0.0,
+                          left_delta_angle_,
+                          0.0;
       // d(T_Robot_DeltaRobot) / d(J22)
       gtsam::Matrix61 H_deltaRobot_J22;
-      H_deltaRobot_J22 = (gtsam::Matrix(6, 1) << 0.0,
-                                                 0.0,
-                                                 0.0,
-                                                 0.0,
-                                                 right_delta_angle_,
-                                                 0.0).finished();
+      H_deltaRobot_J22 << 0.0,
+                          0.0,
+                          0.0,
+                          0.0,
+                          right_delta_angle_,
+                          0.0;
       // d(T_Robot_DeltaRobot) / d(J31)
       gtsam::Matrix61 H_deltaRobot_J31;
-      H_deltaRobot_J31 = (gtsam::Matrix(6, 1) << 0.0,
-                                                 0.0,
-                                                 left_delta_angle_,
-                                                 0.0,
-                                                 0.0,
-                                                 0.0).finished();
+      H_deltaRobot_J31 << 0.0,
+                          0.0,
+                          left_delta_angle_,
+                          0.0,
+                          0.0,
+                          0.0;
       // d(T_Robot_DeltaRobot) / d(J32)
       gtsam::Matrix61 H_deltaRobot_J32;
-      H_deltaRobot_J32 = (gtsam::Matrix(6, 1) << 0.0,
-                                                 0.0,
-                                                 right_delta_angle_,
-                                                 0.0,
-                                                 0.0,
-                                                 0.0).finished();
+      H_deltaRobot_J32 << 0.0,
+                          0.0,
+                          right_delta_angle_,
+                          0.0,
+                          0.0,
+                          0.0;
       // d(deltaRobot) / d(K)
       gtsam::Matrix66 H_deltaRobot_K;
       H_deltaRobot_K << H_deltaRobot_J11, H_deltaRobot_J12, H_deltaRobot_J21, H_deltaRobot_J22, H_deltaRobot_J31, H_deltaRobot_J32;

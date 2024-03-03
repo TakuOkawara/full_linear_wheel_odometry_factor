@@ -39,6 +39,7 @@ int main(int argc, char** argv) {
   // Prior factors and initial values
   double wheel_radius = 2.1;  // [m]  Please use the actual wheel radius of your robot.
   double wheel_base = 1.0;    // [m]  Please use the actual wheelbase of your robot.
+
   // Initial value is set by using the ideal-differential drive model.
   gtsam::Vector6 initial_K;
   initial_K << 0.5*wheel_radius, 0.5*wheel_radius, 0.0, 0.0, -wheel_radius/wheel_base, wheel_radius/wheel_base;
@@ -51,7 +52,7 @@ int main(int argc, char** argv) {
   // Transformation between the robot frame and IMU frame
   gtsam::Pose3 T_Robot_Imu = gtsam::Pose3();
 
-  // The uncertainty of full linear model
+  // The uncertainty of full linear model (In this sample code, a constant matrix is used.)
   auto wheel_odom_noisemodel = gtsam::noiseModel::Diagonal::Sigmas(gtsam::Vector6(1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3));
 
   // Create the full linear wheel odometry factors
@@ -66,7 +67,13 @@ int main(int argc, char** argv) {
                                          T_Robot_Imu,
                                          wheel_odom_noisemodel));
 
-  // Create the data structure to hold the initialEstimate estimate to the solution
+  // Create the kinematic parameter fixation factor
+  gtsam::Vector6 zero_mean_constraints;
+  zero_mean_constraints.setZero();
+  auto random_walk_noisemodel = gtsam::noiseModel::Diagonal::Sigmas(gtsam::Vector6(1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6));
+  graph.emplace_shared<gtsam::BetweenFactor<gtsam::Vector6> >(K(1), K(2), zero_mean_constraints, random_walk_noisemodel);
+
+  // Set initial values
   // For illustrative purposes, these have been deliberately set to incorrect values
   gtsam::Values initial;
   initial.insert(K(1), initial_K);
@@ -97,20 +104,20 @@ int main(int argc, char** argv) {
   initial.insert(X(1), gtsamPose2ToPose3(gtsam::Pose2(0.5, 0.0, 0.2)));
   initial.insert(X(2), gtsamPose2ToPose3(gtsam::Pose2(2.3, 0.1, -0.2)));
   initial.insert(X(3), gtsamPose2ToPose3(gtsam::Pose2(4.1, 0.1, 0.1)));
-  initial.print("\nInitial Estimate:\n");  // print
+  initial.print("\n*** Initial Estimate: ***\n");  // print
 
   // optimize using Levenberg-Marquardt optimization
   gtsam::Values result = gtsam::LevenbergMarquardtOptimizer(graph, initial).optimize();
-  result.print("Final Result:\n");
+  result.print("*** Final Result: ***\n");
 
   std::cout << std::endl << std::endl;
-  std::cout << "initial kinematic parameters of skid-steering robots" << std::endl;
+  std::cout << "##### initial kinematic parameters of skid-steering robots #####" << std::endl;
   for(int i=1; i<3; i++)
   {
     std::cout << "K" << i << std::endl << initial.at<gtsam::Vector6>(K(i)) << std::endl;
   }
 
-  std::cout << "calibrated kinematic parameters of skid-steering robots" << std::endl;
+  std::cout << "##### calibrated kinematic parameters of skid-steering robots #####" << std::endl;
   for(int i=1; i<3; i++)
   {
     std::cout << "K" << i << std::endl << result.at<gtsam::Vector6>(K(i)) << std::endl;
