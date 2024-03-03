@@ -17,7 +17,7 @@ using gtsam::symbol_shorthand::K;  // kinematic parameters of skid-steering robo
 ///////////////////////  Overview  ////////////////////////
 ///////////////////////////////////////////////////////////
 // This example shows how to use the full linear wheel odometry factor.
-// This example has only straight motion, thus J11 and J22 are calibrated such that J11:1.05 -> 1, J12:1.05 -> 1.
+// This example has only straight motion, thus J11 and J21 are calibrated such that J11:1.05 -> 1, J12:1.05 -> 1.
 // This example is created by extending OdometryExample.cpp, GTSAM example.
 
 // Convert gtsam::Pose2 to gtsam::Pose3
